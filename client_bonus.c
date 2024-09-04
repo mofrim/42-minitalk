@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:40:08 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/09/04 20:12:25 by fmaurer          ###   ########.fr       */
+/*   Updated: 2024/09/04 20:12:14 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,35 @@
 /* Yeah. Global. But really useful in here, i swear 🖖 */
 static int	g_srv_ack;
 
+void	send_msg_print_bin(int srv_pid, char *msg);
+
 /* Main. If i'd allow srv_pid < 0, it could set to -1. kill(-1, SIGUSR1)
- * terminates all my processes. Check that on campus.  */
+ * terminates all my processes. Check that on campus.
+ *
+ * My personal *bonus* addon here: The cmdline option '-u'. With that every byte
+ * gets printed in binary notation before it gets send. Nice feature for looking
+ * at the real bytes behind unicode chars.
+ *
+ */
 int	main(int ac, char **av)
 {
 	pid_t	srv_pid;
 
-	if (ac != 3)
+	if (ac == 3 || ac == 4)
 	{
-		ft_printf("Usage: %s SERVER_PID MESSAGE\n", av[0]);
-		return (0);
+		if (ac == 4 && ft_strncmp(av[1], "-u", 2))
+			ft_printf("Bonus Usage: %s -u SERVER_PID MESSAGE\n", av[0]);
+		srv_pid = ft_atoi(av[1 + (ac == 4)]);
+		if ((kill(srv_pid, 0) == -1) || srv_pid < 0)
+			exit_error("Wrong PID or no permission to send signals to PID.\n");
+		signal_setup(&sig_handler);
+		if (ac == 3)
+			send_msg(srv_pid, av[2]);
+		else
+			send_msg_print_bin(srv_pid, av[3]);
 	}
-	srv_pid = ft_atoi(av[1]);
-	if ((kill(srv_pid, 0) == -1) || srv_pid < 0)
-		exit_error("Wrong PID or no permission to kill PID.\n");
-	signal_setup(&sig_handler);
-	send_msg(srv_pid, av[2]);
+	else
+		ft_printf("Usage: %s SERVER_PID MESSAGE\n", av[0]);
 	return (0);
 }
 
@@ -110,7 +123,7 @@ void	send_sig(int srv_pid, int signum)
  * Ͻ Ͼ Ͽ
  *
  * 1 byte = 8 bit:	a
- * 2 bytes = 16bit:	ۺ
+ * 2 bytes = 16bit:	ۺ ä ü ö
  * 3 bytes = 24bit:	﷽﷽
- * 4 bytes = 32bit:	😆
+ * 4 bytes = 32bit:	😆🤓🚀🤣🖖
  */

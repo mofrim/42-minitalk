@@ -6,7 +6,7 @@
 #    By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/18 11:37:05 by fmaurer           #+#    #+#              #
-#    Updated: 2024/09/01 00:17:58 by fmaurer          ###   ########.fr        #
+#    Updated: 2024/09/04 19:49:28 by fmaurer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,19 +21,26 @@ LIBFT				= $(LIBFT_PATH)/libft.a
 
 SRC_FILES_SRV =	./server.c ./miniutils.c
 SRC_FILES_CLI =	./client.c ./miniutils.c
+SRC_FILES_CLI_BONUS  =	./client_bonus.c ./miniutils.c ./utils_bonus.c
 
 SRC_SRV = $(patsubst ./%.c,%.c,$(SRC_FILES_SRV))
 SRC_CLI = $(patsubst ./%.c,%.c,$(SRC_FILES_CLI))
+SRC_CLI_BONUS = $(patsubst ./%.c,%.c,$(SRC_FILES_CLI_BONUS))
 
 all: $(NAME)
 
 $(NAME): server client
 
 server: $(SRC_SRV) | $(LIBFT)
-	cc -g $(CFLAGS) -o server $(SRC_SRV) $(LIBFT)
+	cc $(CFLAGS) -o server $(SRC_SRV) $(LIBFT)
 
 client: $(SRC_CLI) | $(LIBFT)
-	cc -g $(CFLAGS) -o client $(SRC_CLI) $(LIBFT)
+	cc $(CFLAGS) -o client $(SRC_CLI) $(LIBFT)
+
+client_bonus: $(SRC_CLI_BONUS) | $(LIBFT)
+	cc $(CFLAGS) -o client_bonus $(SRC_CLI_BONUS) $(LIBFT)
+
+bonus: server client_bonus
 
 $(LIBFT):
 	make -C $(LIBFT_PATH) all
@@ -47,4 +54,4 @@ fclean:
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus

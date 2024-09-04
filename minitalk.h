@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 12:48:43 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/09/04 10:17:42 by fmaurer          ###   ########.fr       */
+/*   Updated: 2024/09/04 20:12:07 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,10 @@
 # define ACK_TIMEOUT 20
 
 void	exit_error(char *msg);
-void	print_bitstr(unsigned char c);
 void	signal_setup(void (*sig_handler)(int));
+void	sig_handler(int signum);
+void	send_msg(int srv_pid, char *msg);
+int		sendchar(unsigned char c, int srv_pid, int *bits_sent);
+void	send_sig(int srv_pid, int signum);
 
 #endif
