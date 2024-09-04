@@ -6,7 +6,7 @@
 #    By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/18 11:37:05 by fmaurer           #+#    #+#              #
-#    Updated: 2024/09/04 14:36:39 by fmaurer          ###   ########.fr        #
+#    Updated: 2024/09/04 17:09:53 by fmaurer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,9 +21,11 @@ LIBFT				= $(LIBFT_PATH)/libft.a
 
 SRC_FILES_SRV =	./server.c ./miniutils.c
 SRC_FILES_CLI =	./client.c ./miniutils.c
+SRC_FILES_CLI_BONUS =	./client_bonus.c ./miniutils.c
 
 SRC_SRV = $(patsubst ./%.c,%.c,$(SRC_FILES_SRV))
 SRC_CLI = $(patsubst ./%.c,%.c,$(SRC_FILES_CLI))
+SRC_CLI_BONUS = $(patsubst ./%.c,%.c,$(SRC_FILES_CLI_BONUS))
 
 all: $(NAME)
 
@@ -34,6 +36,9 @@ server: $(SRC_SRV) | $(LIBFT)
 
 client: $(SRC_CLI) | $(LIBFT)
 	cc -g $(CFLAGS) -o client $(SRC_CLI) $(LIBFT)
+
+bonus: server client_bonus.c
+	cc -g $(CFLAGS) -o client_bonus $(SRC_CLI_BONUS) $(LIBFT)
 
 $(LIBFT):
 	make -C $(LIBFT_PATH) all
