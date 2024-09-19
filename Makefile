@@ -6,7 +6,7 @@
 #    By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/18 11:37:05 by fmaurer           #+#    #+#              #
-#    Updated: 2024/09/19 13:38:43 by fmaurer          ###   ########.fr        #
+#    Updated: 2024/09/19 07:20:26 by fmaurer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,9 +41,6 @@ client_bonus: $(SRC_CLI_BONUS) | $(LIBFT)
 	cc $(CFLAGS) -o client_bonus $(SRC_CLI_BONUS) $(LIBFT)
 
 bonus: server client_bonus
-
-bonus: server client_bonus.c
-	cc -g $(CFLAGS) -o client_bonus $(SRC_CLI_BONUS) $(LIBFT)
 
 $(LIBFT):
 	make -C $(LIBFT_PATH) all
