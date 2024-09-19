@@ -6,46 +6,57 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:40:08 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/09/04 17:10:11 by fmaurer          ###   ########.fr       */
+/*   Updated: 2024/09/19 13:42:32 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
 #include "minitalk.h"
 
-void	send_msg(int srv_pid, char *msg);
-int		sendchar(unsigned char c, int srv_pid, int *bits_sent);
-void	send_sig(int srv_pid, int signum);
+/* Yeah. Global. But really useful in here, i swear 🖖 */
+static int	g_srv_ack;
+
+void	send_msg_print_bin(int srv_pid, char *msg);
 
 /* Main. If i'd allow srv_pid < 0, it could set to -1. kill(-1, SIGUSR1)
- * terminates all my processes. Check that on campus.  */
+ * terminates all my processes. Check that on campus.
+ *
+ * My personal *bonus* addon here: The cmdline option '-u'. With that every byte
+ * gets printed in binary notation before it gets send. Nice feature for looking
+ * at the real bytes behind unicode chars.
+ *
+ */
 int	main(int ac, char **av)
 {
 	pid_t	srv_pid;
 
-	if (ac != 3 && ac != 4)
+	if (ac == 3 || ac == 4)
 	{
-		ft_printf("Usage: %s SERVER_PID MESSAGE\n", av[0]);
-		return (0);
-	}
-	if (ac == 3)
-	{
-		srv_pid = ft_atoi(av[1]);
+		if (ac == 4 && ft_strncmp(av[1], "-u", 2))
+			ft_printf("Bonus Usage: %s -u SERVER_PID MESSAGE\n", av[0]);
+		srv_pid = ft_atoi(av[1 + (ac == 4)]);
 		if ((kill(srv_pid, 0) == -1) || srv_pid < 0)
-			exit_error("Wrong PID or no permission to kill PID.\n");
-		send_msg(srv_pid, av[2]);
-		return (0);
+			exit_error("Wrong PID or no permission to send signals to PID.\n");
+		signal_setup(&sig_handler);
+		if (ac == 3)
+			send_msg(srv_pid, av[2]);
+		else
+			send_msg_print_bin(srv_pid, av[3]);
 	}
-	if (ac == 4)
-	{
-		if (ft_strncmp(av[1], "-u", 2))
-		{
-			ft_printf("Bonus usage: %s -u SERVER_PID MESSAGE\n", av[0]);
-			return (0);
-		}
-	}
+	else
+		ft_printf("Usage: %s SERVER_PID MESSAGE\n", av[0]);
+	return (0);
 }
 
+/* The client signal Handler. For SIGUSR2, which means server has reveived one
+ * complete byte, print a dot. For SIGUSR1, which means server has received a
+ * single bit, set global acknowledgement var to 1. */
+void	sig_handler(int signum)
+{
+	if (signum == SIGUSR2)
+		ft_putchar_fd('.', 1);
+	if (signum == SIGUSR1)
+		g_srv_ack = 1;
+}
 
 /* Send msg char by char to server. */
 void	send_msg(int srv_pid, char *msg)
@@ -57,7 +68,6 @@ void	send_msg(int srv_pid, char *msg)
 	while (*msg)
 	{
 		sendchar((unsigned char)*msg, srv_pid, &bits_sent);
-		usleep(50);
 		msg++;
 	}
 	sendchar('\0', srv_pid, &bits_sent);
@@ -79,6 +89,7 @@ int	sendchar(unsigned char c, int srv_pid, int *bits_sent)
 			send_sig(srv_pid, SIGUSR1);
 		(*bits_sent)++;
 		bit_indx++;
+		g_srv_ack = 0;
 	}
 	return (0);
 }
@@ -87,8 +98,22 @@ int	sendchar(unsigned char c, int srv_pid, int *bits_sent)
  * back as Ack. For each 10ms timeout print a space char. */
 void	send_sig(int srv_pid, int signum)
 {
+	int	timeout;
+
+	timeout = 0;
 	kill(srv_pid, signum);
-	usleep(100);
+	usleep(10);
+	while (!g_srv_ack && timeout < ACK_TIMEOUT)
+	{
+		ft_putchar_fd(' ', 1);
+		usleep(10);
+		timeout++;
+	}
+	if (timeout == ACK_TIMEOUT && !g_srv_ack)
+	{
+		errno = ETIMEDOUT;
+		exit_error("Server Timeout\n");
+	}
 }
 
 /* Some unicode symbols:
@@ -98,7 +123,13 @@ void	send_sig(int srv_pid, int signum)
  * Ͻ Ͼ Ͽ
  *
  * 1 byte = 8 bit:	a
+<<<<<<< HEAD
  * 2 bytes = 16bit:	ۺ
  * 3 bytes = 24bit:	﷽﷽
  * 4 bytes = 32bit:	😆
+=======
+ * 2 bytes = 16bit:	ۺ ä ü ö
+ * 3 bytes = 24bit:	﷽﷽
+ * 4 bytes = 32bit:	😆🤓🚀🤣🖖
+>>>>>>> repoGH/submission
  */

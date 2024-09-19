@@ -6,15 +6,14 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:40:08 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/09/04 14:32:46 by fmaurer          ###   ########.fr       */
+/*   Updated: 2024/09/19 13:39:41 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	send_msg(int srv_pid, char *msg);
-int		sendchar(unsigned char c, int srv_pid, int *bits_sent);
-void	send_sig(int srv_pid, int signum);
+/* Yeah. Global. But really useful in here, i swear 🖖 */
+static int	g_srv_ack;
 
 /* Main. If i'd allow srv_pid < 0, it could set to -1. kill(-1, SIGUSR1)
  * terminates all my processes. Check that on campus.  */
