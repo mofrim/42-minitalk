@@ -6,7 +6,7 @@
 #    By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/06 13:53:42 by fmaurer           #+#    #+#              #
-#    Updated: 2024/08/06 19:28:19 by fmaurer          ###   ########.fr        #
+#    Updated: 2024/09/19 13:55:59 by fmaurer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -93,7 +93,10 @@ PIC	=	-fPIC
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@echo -e "\nArchiving:\n($^) --> libft.a\n"
+	@echo
+	@echo "Archiving:"
+	@echo "($^) --> libft.a"
+	@echo
 	@ar -rcs $(NAME) $(OBJS)
 
 $(OBJS_DIR)/%.o : %.c libft.h
