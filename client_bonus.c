@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:40:08 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/09/19 13:42:32 by fmaurer          ###   ########.fr       */
+/*   Updated: 2024/09/04 20:12:14 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,13 +123,7 @@ void	send_sig(int srv_pid, int signum)
  * Ͻ Ͼ Ͽ
  *
  * 1 byte = 8 bit:	a
-<<<<<<< HEAD
- * 2 bytes = 16bit:	ۺ
- * 3 bytes = 24bit:	﷽﷽
- * 4 bytes = 32bit:	😆
-=======
  * 2 bytes = 16bit:	ۺ ä ü ö
  * 3 bytes = 24bit:	﷽﷽
  * 4 bytes = 32bit:	😆🤓🚀🤣🖖
->>>>>>> repoGH/submission
  */

@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 12:49:25 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/09/04 14:22:48 by fmaurer          ###   ########.fr       */
+/*   Updated: 2024/09/04 11:02:34 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,10 @@
  * explicitness over shortness here. */
 void	signal_handler(int signum, siginfo_t *info, void *context)
 {
-	static int		i;
+	static int				i;
 	static unsigned char	c;
 
 	(void)context;
-	(void)info;
 	if (signum == SIGUSR2)
 		c |= (0b10000000 >> i);
 	i++;
@@ -33,7 +32,11 @@ void	signal_handler(int signum, siginfo_t *info, void *context)
 			write(1, &c, 1);
 		c = 0;
 		i = 0;
+		if (kill(info->si_pid, SIGUSR2) == -1)
+			exit_error("Server failed to send SIGUSR2");
 	}
+	if (kill(info->si_pid, SIGUSR1) == -1)
+		exit_error("Server failed to send SIGUSR1");
 }
 
 /* Main. Using SA_SIGINFO here because we need the pid of the client which will
