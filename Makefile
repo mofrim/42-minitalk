@@ -6,7 +6,7 @@
 #    By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/18 11:37:05 by fmaurer           #+#    #+#              #
-#    Updated: 2024/09/04 19:49:28 by fmaurer          ###   ########.fr        #
+#    Updated: 2024/09/19 07:18:16 by fmaurer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,7 +50,7 @@ clean: fclean
 fclean:
 	@make -s -C $(LIBFT_PATH) fclean
 	@echo "Removing $(NAME) binaries..."
-	@rm -f server client
+	@rm -f server client client_bonus
 
 re: fclean all
 
